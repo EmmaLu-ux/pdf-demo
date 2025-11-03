@@ -58,7 +58,7 @@ const loadImageAsDataUrl = async (src) => {
  * @param {ArrayBuffer} buffer 原始二进制数据
  * @returns {string} base64 表示
  */
-const arrayBufferToBase64 = (buffer) => {
+export const arrayBufferToBase64 = (buffer) => {
   const bytes = new Uint8Array(buffer)
   const chunkSize = 0x8000
   let binary = ''
@@ -75,7 +75,7 @@ const arrayBufferToBase64 = (buffer) => {
  * 加载并缓存 PDF 需要的字体数据。
  * @returns {Promise<string>} 字体的 base64 编码
  */
-const loadFontData = async () => {
+export const loadFontData = async () => {
   if (cachedFontBase64) return cachedFontBase64
 
   const response = await fetch(toAbsoluteUrl(fontUrl))
@@ -93,7 +93,7 @@ const loadFontData = async () => {
  * @param {import('jspdf').jsPDF} pdfInstance 当前 PDF 实例
  * @returns {Promise<void>} 字体注册完成
  */
-const ensureFontLoaded = async (pdfInstance) => {
+export const ensureFontLoaded = async (pdfInstance) => {
   if (!pdfInstance?.addFileToVFS) return
   const fontList = (pdfInstance.getFontList && pdfInstance.getFontList()) || {}
   if (fontList.NotoSansSC) return
