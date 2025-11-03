@@ -35,20 +35,25 @@ const fetchArrayBuffer = async (url) => {
  * @returns {Promise<Blob>} 生成的 PDF Blob
  */
 const fillTemplate = async (data) => {
+  // 获取pdf模板文件的二进制数据
   const templateBytes = await fetchArrayBuffer('/templates/report-template.pdf')
   const pdfDoc = await PDFDocument.load(templateBytes)
 
+  // 嵌入字体
   const fontkit = fontkitModule.default || fontkitModule
   pdfDoc.registerFontkit(fontkit)
-
   const fontBytes = await fetchArrayBuffer(fontUrl)
   const notoSans = await pdfDoc.embedFont(fontBytes, { subset: false })
+  console.log('notoSans', notoSans)
 
+  // 获取表单对象
   const form = pdfDoc.getForm()
-
+  console.log('pdfDoc', pdfDoc)
+  // 获取 AcroForm 字典，设置 NeedAppearances 和默认外观
   const acroFormRef = pdfDoc.catalog.get(PDFName.of('AcroForm'))
   if (acroFormRef) {
-    const acroForm = pdfDoc.context.lookup(acroFormRef, PDFDict)
+    // acroForm 是一个可操作的字典对象
+    const acroForm = pdfDoc.context.lookup(acroFormRef, PDFDict) // 去底层对象表里查找该引用对应的对象，并做类型校验
     acroForm.set(PDFName.of('NeedAppearances'), PDFBool.True)
     acroForm.set(PDFName.of('DA'), PDFString.of(`/${notoSans.name} 0 Tf 0 g`))
 
@@ -125,6 +130,7 @@ const handleGenerate = async () => {
   loading.value = true
   try {
     const blob = await fillTemplate(reportData.value)
+
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url

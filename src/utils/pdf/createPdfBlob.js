@@ -114,7 +114,7 @@ export const createPdfBlob = async (target) => {
     throw new Error('缺少可生成的 PDF 内容')
   }
 
-  const pdf = new jsPDF('p', 'mm', 'a4')
+  const pdf = new jsPDF('p', 'mm', 'a4') // 老式参数写法
   const pageWidth = pdf.internal.pageSize.getWidth()
   const pageHeight = pdf.internal.pageSize.getHeight()
   const marginX = 20

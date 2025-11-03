@@ -94,7 +94,7 @@ const main = () => {
     throw new Error(`Font not found at ${fontPath}`)
   }
 
-  const pdf = new jsPDF({ unit: 'mm', format: 'a4' })
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4' }) // 新的对象写法
   const fontData = fs.readFileSync(fontPath)
   pdf.addFileToVFS('NotoSansSC-Regular.ttf', toBase64(fontData))
   pdf.addFont('NotoSansSC-Regular.ttf', 'NotoSansSC', 'normal')
@@ -105,7 +105,7 @@ const main = () => {
   pdf.text('检测报告模板', 105, 25, { align: 'center' })
 
   pdf.setDrawColor(180)
-  pdf.setLineWidth(0.5)
+  pdf.setLineWidth(0.2)
   pdf.line(20, 40, 190, 40)
 
   pdf.setFont('NotoSansSC', 'normal')
@@ -115,7 +115,7 @@ const main = () => {
     label: '模板编号：',
     name: 'templateNo',
     labelX: 20,
-    valueX: 50,
+    valueX: 40,
     y: 36,
     lineWidth: 60,
   })
@@ -124,43 +124,43 @@ const main = () => {
     label: '生成日期：',
     name: 'generatedAt',
     labelX: 130,
-    valueX: 160,
+    valueX: 150,
     y: 36,
     lineWidth: 30,
   })
 
   drawUnderlineField(pdf, {
-    label: '客户名称',
+    label: '客户名称：',
     name: 'clientName',
     labelX: 20,
-    valueX: 60,
+    valueX: 40,
     y: 50,
     lineWidth: 110,
   })
 
   drawUnderlineField(pdf, {
-    label: '客户编号',
+    label: '客户编号：',
     name: 'clientId',
     labelX: 20,
-    valueX: 60,
+    valueX: 40,
     y: 62,
     lineWidth: 110,
   })
 
   drawUnderlineField(pdf, {
-    label: '联系人',
+    label: '联系人：',
     name: 'contactPerson',
     labelX: 20,
-    valueX: 60,
+    valueX: 40,
     y: 74,
     lineWidth: 110,
   })
 
   drawUnderlineField(pdf, {
-    label: '联系电话',
+    label: '联系电话：',
     name: 'contactPhone',
     labelX: 20,
-    valueX: 60,
+    valueX: 40,
     y: 86,
     lineWidth: 110,
   })
@@ -178,15 +178,15 @@ const main = () => {
   const columnTitles = ['序号', '检测项目', '结果', '备注']
 
   pdf.setDrawColor(200)
-  pdf.setLineWidth(0.4)
+  pdf.setLineWidth(0.2)
 
-  // Horizontal lines
+  // 表格横线
   for (let i = 0; i <= 5; i += 1) {
     const y = tableTop + i * rowHeight
     pdf.line(tableLeft, y, tableLeft + tableWidth, y)
   }
 
-  // Vertical lines
+  // 表格竖线
   let xCursor = tableLeft
   for (let i = 0; i < columnWidths.length; i += 1) {
     pdf.line(xCursor, tableTop, xCursor, tableTop + 5 * rowHeight)
@@ -194,7 +194,7 @@ const main = () => {
   }
   pdf.line(tableLeft + tableWidth, tableTop, tableLeft + tableWidth, tableTop + 5 * rowHeight)
 
-  // Column titles
+  // 表格header标题
   pdf.setFontSize(11)
   xCursor = tableLeft
   columnTitles.forEach((title, index) => {
@@ -204,8 +204,8 @@ const main = () => {
 
   pdf.setFont('NotoSansSC', 'normal')
 
-  // Create table text fields
-  for (let row = 0; row < 5; row += 1) {
+  // 表格内容字段表单域
+  for (let row = 1; row < 5; row += 1) {
     const rowY = tableTop + (row + 1) * rowHeight - 2
     let cellX = tableLeft
     const fieldHeight = 7
@@ -223,11 +223,11 @@ const main = () => {
     })
   }
 
-  pdf.setFontSize(10)
+  pdf.setFontSize(7)
   pdf.text('（生成时填充检测项目列表，可按数据条数动态扩展）', tableLeft, tableTop + 5 * rowHeight + 7)
 
   pdf.setDrawColor(180)
-  pdf.setLineWidth(0.5)
+  pdf.setLineWidth(0.2)
   pdf.line(20, tableTop + 5 * rowHeight + 20, 190, tableTop + 5 * rowHeight + 20)
 
   pdf.setFont('NotoSansSC', 'bold')
@@ -239,10 +239,10 @@ const main = () => {
   pdf.text('结论内容：', 20, tableTop + 5 * rowHeight + 38)
   pdf.text('建议措施：', 20, tableTop + 5 * rowHeight + 50)
 
-  // Multiline fields for conclusion and recommendation
+  // 多行表单域
   const conclusionField = new pdf.AcroFormTextField()
   conclusionField.T = 'conclusion'
-  conclusionField.Rect = [45, tableTop + 5 * rowHeight + 33, 140, 9]
+  conclusionField.Rect = [40, tableTop + 5 * rowHeight + 33, 140, 9]
   conclusionField.multiline = true
   conclusionField.fontName = 'NotoSansSC'
   conclusionField.fontSize = 10
@@ -250,7 +250,7 @@ const main = () => {
 
   const recommendationField = new pdf.AcroFormTextField()
   recommendationField.T = 'recommendation'
-  recommendationField.Rect = [45, tableTop + 5 * rowHeight + 45, 140, 9]
+  recommendationField.Rect = [40, tableTop + 5 * rowHeight + 45, 140, 9]
   recommendationField.multiline = true
   recommendationField.fontName = 'NotoSansSC'
   recommendationField.fontSize = 10
@@ -261,19 +261,19 @@ const main = () => {
 
   createTextField(pdf, {
     name: 'reviewer',
-    x: 40,
+    x: 35,
     y: tableTop + 5 * rowHeight + 62,
     width: 50,
   })
 
   createTextField(pdf, {
     name: 'reviewDate',
-    x: 140,
+    x: 130,
     y: tableTop + 5 * rowHeight + 62,
     width: 45,
   })
 
-  pdf.setFontSize(9)
+  pdf.setFontSize(7)
   pdf.text('提示：表格行数与空白内容可在填充时写入真实数据。', 20, tableTop + 5 * rowHeight + 72)
 
   const buffer = Buffer.from(pdf.output('arraybuffer'))
